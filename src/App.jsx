@@ -89,6 +89,7 @@ function App() {
       setSpeaking(true);
       setTimeout(() => {
         console.log('Done speaking')
+        setAvaFace(avaEmotion.neutral);
         setSpeaking(false);
       }, audioLength * 1000);
 
@@ -125,25 +126,6 @@ function App() {
 
   //   swapEmojis();
   // };
-
-  // useEffect(() => {
-  //   if (speaking) {
-  //     let i = 0;
-  //     const interval = setInterval(() => {
-  //       if (i < aiSpokenResponse.length) {
-  //         setAiText((aiText) => aiText + aiSpokenResponse[i]);
-  //         i++;
-  //       } else {
-  //         clearInterval(interval);
-  //       }
-  //     }, (audioLength/aiSpokenResponse * 1000);
-
-  //     // Clean up the interval when the component unmounts
-  //     return () => {
-  //       clearInterval(interval);
-  //     };
-  //   }
-  // }, [speaking, audioLength]);
 
   useEffect(() => {
     console.log(aiText);
