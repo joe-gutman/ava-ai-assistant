@@ -12,11 +12,11 @@ const connectDB = async () => {
   try {
     await client.connect();
     db = client.db(name);
-    conn = await client.connect();
     return db;
-  } catch(err) {
+  } catch (err) {
     console.error(err);
+    throw err; // Rethrow the error to be caught and handled elsewhere, if needed.
   }
-}
+};
 
-module.exports = connectDB;
+module.exports = { connectDB };

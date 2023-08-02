@@ -1,0 +1,149 @@
+.mdl-background {
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 999;
+  top: 0px;
+  left: 0px;
+}
+
+#mdl-login {
+  display: flex;
+  width: 500px;
+  margin: 0 auto;
+  z-index: 1000;
+
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  background-color: white;
+}
+
+#mdl-login-form, #mdl-register-form{
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  margin-top: 6px;
+  margin-bottom: 40px;
+}
+
+.mdl-login-buttons, .mdl-register-buttons{
+  width: 150px;
+  height: 25px;
+  margin: 10px;
+
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+
+  border: 0px;
+}
+.mdl-login-buttons:hover, .mdl-register-buttons:hover{
+  width: 150px;
+  height: 25px;
+  margin: 10px;
+
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+
+  background-color: rgb(210, 210, 210);
+  cursor: pointer;
+}
+
+.mdl-background {
+  /* backgrounde color transparent black */
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+}
+
+#mdl-register {
+  display: flex;
+  width: 500px;
+  margin: 0 auto;
+  z-index: 1000;
+
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  background-color: white;
+}
+
+.mdl-register-inputs , .mdl-login-inputs{
+  width: 72%;
+  height: 35px;
+  margin: 10px auto;
+  padding: 10px;
+  border: 0;
+
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+
+  background-color: rgb(232, 240, 254);
+}
+
+#mdl-register-password-container, #mdl-login-password-container {
+  display: flex;
+  width: 72%;
+  height: 50px;
+  align-items: center;
+}
+
+.mdl-password-input {
+  margin: 0px;
+  width: 100%;
+}
+
+#mdl-login-show-password, #mdl-register-show-password {
+  height: 35px;
+  padding: 2px;
+  margin: 10px;
+}
+
+#mdl-current-user, #mdl-new-user {
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+#mdl-current-user *, #mdl-new-user * {
+  margin: 5px;
+}
+
+#mdl-current-user h3:hover, #mdl-new-user h3:hover {
+  cursor: pointer;
+  color: rgb(0, 157, 255);
+}
+
+#error {
+  height: 15px;
+}
+
+#error p {
+  color: red;
+  font-size: small;
+  text-transform: uppercase;
+  margin: 0 0 5px 0;
+  padding: 0;
+}

@@ -1,0 +1,38 @@
+#app-header {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  max-width: 1280px;
+  top: 0px;
+}
+
+#header-spacer {
+  flex-grow: 1;
+}
+
+#app-header-login {
+  justify-content: flex-end;
+  padding: 10px 20px;
+  margin: 20px;
+  font-size: large;
+  font-weight: bold;
+  color: white;
+  border: 0px;
+  background-color: rgb(84, 84, 84);
+
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+
+#app-header-login:hover {
+  cursor: pointer;
+  background-color: rgb(47, 47, 47);
+}
+
+#mdl-new-user {
+  display: flex;
+  flex-direction: row;
+}
+
+

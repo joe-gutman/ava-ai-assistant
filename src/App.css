@@ -1,0 +1,13 @@
+/* * {
+  border: 1px solid black;
+} */
+
+* {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+}
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  background-color: rgb(47, 175, 255);
+}
