@@ -192,7 +192,7 @@ var Register = ({setShowRegister, setShowLogin, setUser, user, setUserInfo, user
             <p>Already have an account? </p><h3 onClick={() => {setShowRegister(false); setShowLogin(true);}}>Login</h3>
           </div>
           <div>
-            <button className="mdl-register-buttons mdl-register-btn" type="submit" tag="register">Register</button>
+            <button className="mdl-register-buttons" id="mdl-register-btn" type="submit" tag="register">Register</button>
             <button className="mdl-register-buttons mdl-cancel-btn" type="button" tag="cancel" onClick={close}>Cancel</button>
           </div>
           {errorMessage !== '' ? <ErrorMessage errorMessage={errorMessage}/> : <></> }

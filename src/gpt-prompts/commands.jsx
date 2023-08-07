@@ -47,17 +47,19 @@ const Commands = {
   commands: `
     You can do commands like:
 
-    show a list
-    hide a list
-    create a list
-    delete a list
-    add a task
-    delete a task
-    mark a task as complete
-    unmark a task as complete
+    handle lists
 
 
-    $cat fact$
+    cat fact
+
+    In the future you will have the following commands:
+    getting weather
+    setting timers
+    controlling household devices
+    setting reminders
+    getting news
+    searching the internet
+    and more.
     `,
 
   emojis: `
@@ -297,6 +299,8 @@ const Commands = {
 
     Responses:
     Responses can be conversational and friendly and fun. Do not be robotic. Make the language smooth and inviting. For example, "I've created a grocery list for you" is better than "Grocery list created." Or "I've added eggs to your grocery list" is better than "Eggs added to grocery list."
+
+    List names should not include the word "List" in them. Do not include the word "list".
     `,
 
   initialize: `

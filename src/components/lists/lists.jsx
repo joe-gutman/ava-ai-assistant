@@ -12,10 +12,6 @@ const Lists = ({ user, command, universalShowHide}) => {
   const [lists, setLists] = useState([]);
 
   useEffect(() => {
-    console.log('current list updated:', currentList);
-  }, [currentList]);
-
-  useEffect(() => {
     if (initialRender.current) {
       initialRender.current = false;
     } else {
@@ -24,9 +20,7 @@ const Lists = ({ user, command, universalShowHide}) => {
         if (command.action === 'create') {
           api.createList(user, command.list)
             .then((newList) => {
-              console.log('new list:', newList)
               if (showAllLists) {
-                console.log('getting lists')
                 return api.getList(user)
                   .then((lists) => {
                     setCurrentList(lists);
@@ -47,7 +41,6 @@ const Lists = ({ user, command, universalShowHide}) => {
           api.deleteList(user, command.list)
             .then((updatedList) => {
               if (showAllLists) {
-                  console.log('getting lists')
                   return api.getList(user)
                     .then((lists) => {
                       setCurrentList(lists);
@@ -60,10 +53,8 @@ const Lists = ({ user, command, universalShowHide}) => {
             });
 /* ------------------------------- add item ------------------------------ */
         } else if (command.action === 'add item') {
-          console.log('adding item:', command.item)
           api.addListItem( user, command.list, command.item )
             .then((updatedList) => {
-              console.log('updated list:', updatedList)
               setCurrentList(updatedList);
             })
             .catch((error) => {
@@ -98,7 +89,6 @@ const Lists = ({ user, command, universalShowHide}) => {
             });
 /* ------------------------------- show list ------------------------------ */
         } else if (command.action === 'show') {
-          console.log('getting list:', user, command.list)
           api.getList(user, command.list)
             .then((list) => {
               setShowAllLists(false);
@@ -111,7 +101,6 @@ const Lists = ({ user, command, universalShowHide}) => {
         } else if (command.action === 'show all') {
           api.getList(user)
             .then((allLists) => {
-              console.log('all lists:', allLists);
               setShowAllLists(true);
               setCurrentList(allLists);
             })
@@ -129,7 +118,6 @@ const Lists = ({ user, command, universalShowHide}) => {
 
   return createPortal(
     showAllLists ? (
-      <div className="mdl-background">
         <div className="mdl-list">
           <h2 className="mdl-list-title">Lists</h2>
           <ul>
@@ -138,9 +126,7 @@ const Lists = ({ user, command, universalShowHide}) => {
             ))}
           </ul>
         </div>
-      </div>
     ) : Object.keys(currentList).length > 0 ? (
-      <div className="mdl-background">
         <div className="mdl-list">
           <h2 className="mdl-list-title">{currentList.list_name}</h2>
           <ul>
@@ -159,7 +145,6 @@ const Lists = ({ user, command, universalShowHide}) => {
             ))}
           </ul>
         </div>
-      </div>
     ) : null,
     document.body
   );

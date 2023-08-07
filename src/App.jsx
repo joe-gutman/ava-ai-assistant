@@ -34,49 +34,118 @@ function App() {
     thinking: '🤔',
     speaking: '😮',
   });
-  const [aiText, setAiText] = useState('');
-  const [aiSpokenResponse, setAISpokenResponse] = useState('');
+  const [aiResponse, setAIResponse] = useState('');
   const [audioLength, setAudioLength] = useState(0);
+  // var promptCommandType = `Given a user's statement "${recognizedSpeech}", classify it into one of the following command types:
 
-  const chatGPTTransform = async (text) => {
-    const response = await AskAI(text);
-    if (response) {
-      const audio = await TextToSpeech(response);
-      PlayAudio(audio);
+  // list
+  // conversation
+  // other
+  // none
+
+  // Here are some examples for context:
+
+  // If the user says "add milk to my grocery list", the command type would be "list".
+  // If the user says "what is the weather like today?", the command type would be "other".
+  // If the user asks "how are you?" or "what is your name?", the command type would be "conversation".
+
+  // Return only the command type for the given user statement.`;
+
+
+  // takes in a string and determines whether it is a command for Ava
+  const isCommand = async(recognizedSpeech) => {
+    let prompt = `Given a user's statement "${recognizedSpeech}", determine whether the statement is intended as a command for an AI assistant named Ava.
+
+    For context, Ava responds to commands when they contain her name or a similar trigger word like 'Eva'.
+
+    Here are some examples:
+
+        If the user says "Hey Ava, what's the weather like today?", it's intended as a command for Ava.
+        If the user says "I was talking to Ava about the weather.", it's not a command for Ava.
+
+    Please respond with 'true' if the statement is a command for Ava, and 'false' if it is not.`
+
+    if (recognizedSpeech.toLowerCase().includes("ava") || recognizedSpeech.toLowerCase().includes("eva")) {
+      var response = await AskAI(prompt + recognizedSpeech);
+      //response will show up in the form of (true: command type)
+      if (response) {
+        return true;
+      } else {
+        return false;
+      }
     }
   }
 
-  //speech recognition and voice response function
-  const handleSpeech = () => {
-    const triggers = ['hello ava', 'hi ava', 'hey ava'];
+  // takes in a string and parses out the command type for Ava
+  const getCommand = (recognizedSpeech) => {
+    var commandTypes = ["list", "conversation", "other", "none"]
+
+    var commands = {
+      "list": {
+        "commands": ["create", "delete", "add item", "delete item", "mark complete", "mark incomplete", "show", "show all", "hide"],
+        "response": "{ 'command': command, 'list': listName, 'item': itemName, 'completed': completed, 'reply': reply }",
+      "conversation": {
+        "response": "{ 'reply': reply }"
+      },
+      "other": {
+        "response": "{ 'reply': 'I don't know how to do that yet.'}"
+      },
+      "none": {
+        "response": "{ 'reply': 'I'm sorry, I didn't understand that.'}"
+      }
+    }
+
+
+
+    var prompt = `Given a user's statement "${recognizedSpeech}", classify it into one of the following command types:
+
+    ${commandTypes.join("\n")}
+
+    Here are some examples for context:
+
+      If the user says "add milk to my grocery list", the command type would be "list".
+      If the user says "what is the weather like today?", the command type would be "other".
+      If the user asks "how are you?" or "what is your name?", the command type would be "conversation".
+
+    Return only the command type for the given user statement.`;
+
+    return AskAI(prompt + recognizedSpeech);
+  }
+
+
+
+  const runCommand = (command) => {p
+    var commands = {
+      "conversation": avaConversation,
+      "list": avaList,
+      "other": avaOther
+    }
+
+    commands[command]();
+  }
+
+  const userInput = (phrase) => {
+    console.log("Heard: " + phrase);
 
     if (user !== undefined) {
-      const handlePhrase = async (phrase) => {
-        console.log('Heard:', phrase);
-
-        for (let trigger of triggers) {
-          if (phrase.toLowerCase().startsWith(trigger)) {
-            setAvaFace(avaEmotion.thinking);
-            const command = phrase.replace(trigger, '').trim();
-            const response = await AskAI(prompt + command + '.');
-            if (response) {
-              var aiResponse = JSON.parse(response.toLowerCase());
-              setCommand(aiResponse);
-              setAvaFace(aiResponse.emoji);
-              const audio = await TextToSpeech(aiResponse.response);
-              setAISpokenResponse(aiResponse.response);
-              PlayAudio(audio);
-            }
+      isCommand(phrase)
+        .then((isCommand) => {
+          if (isCommand) {
+            getCommand(phrase).then((command) => {
+              runCommand(command);
+            });
           }
-        }
-      };
-
-      const recognition = InitializeSpeechRecognition(handlePhrase);
-
-      return () => {
-        if (recognition) recognition.stop();
-      };
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
+
+    const recognition = InitializeSpeechRecognition(userInput);
+
+    return () => {
+      if (recognition) recognition.stop();
+    };
   };
 
   const PlayAudio = (audioBuffer) => {
@@ -88,10 +157,10 @@ function App() {
 
       setSpeaking(true);
       setTimeout(() => {
-        console.log('Done speaking')
+        console.log('done speaking');
         setAvaFace(avaEmotion.neutral);
         setSpeaking(false);
-      }, audioLength * 1000);
+      }, decodedBuffer.duration * 1000);
 
       const source = audioContext.createBufferSource();
       source.buffer = decodedBuffer;
@@ -101,39 +170,6 @@ function App() {
       console.error('Error decoding audio data:', error);
     });
   };
-
-  // const avaFaceSwap = async (length, ...emoji) => {
-  //   const max = 5000;
-  //   const min = 1000;
-  //   const totalDuration = length * 1000;
-  //   let elapsed = 0;
-
-  //   // Convert emoji parameters to an array of emojis
-  //   const emojis = emoji.flat();
-
-  //   const swapEmojis = () => {
-  //     if (elapsed >= totalDuration) {
-  //       return;
-  //     }
-
-  //     const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
-  //     setAvaFace(randomEmoji);
-
-  //     const nextInterval = Math.floor(Math.random() * (max - min) + min);
-  //     elapsed += nextInterval;
-  //     setTimeout(swapEmojis, nextInterval);
-  //   };
-
-  //   swapEmojis();
-  // };
-
-  useEffect(() => {
-    console.log(aiText);
-  }, [aiText]);
-
-  useEffect(() => {
-    console.log(aiSpokenResponse);
-  }, [aiSpokenResponse]);
 
   useEffect(() => {
     const prompt = AI.Identity.identity + AI.Commands.instructions + AI.Commands.commands + AI.Commands.handleLists + " you have these lists: "+ lists.toString() + AI.Commands.handleConversation + AI.Commands.emoji + AI.Commands.initialize;
@@ -146,16 +182,11 @@ function App() {
     } else {
       // const audio = new Audio('./assets/startup.mp3');
       // audio.play();
-      const prompt = AI.User.user + AI.Identity.identity + AI.Startup.startup + AI.Startup.greeting + AI.Startup.help + "be short and concise" + AI.Commands.initialize;
+      // const prompt = AI.User.user + AI.Identity.identity + AI.Startup.startup + AI.Startup.greeting + AI.Startup.help + " be short and concise, don't make a long introduction, only ask one question" + AI.Commands.initialize;
       // chatGPTTransform(prompt);
-      handleSpeech();
-
+      const recognition = InitializeSpeechRecognition(userInput);
     }
   }, [user]);
-
-  useEffect(() => {
-    console.log(command);
-  }, [command]);
 
   if (user === undefined) {
     return (
@@ -184,7 +215,7 @@ function App() {
     return (
       <>
         <Header userInfo={userInfo} setUserInfo={setUserInfo} />
-        {createPortal(<Ava avaFace={avaFace} avaMini={avaMini} aiText={aiText} aiSpokenResponse={aiSpokenResponse} audioLength={audioLength} />,document.body)}
+        {createPortal(<Ava avaFace={avaFace} avaMini={avaMini} aiResponse={aiResponse} audioLength={audioLength} />,document.body)}
         <Lists user={user} command={command} universalHide={universalHide} lists={lists} setLists={setLists} setAvaMini={setAvaMini} />
       </>
     );

@@ -18,7 +18,7 @@
   z-index: 1000;
 }
 
-#ava p {
+#ava-face p {
   position: absolute;
   float: left;
   top: 0;
@@ -26,4 +26,41 @@
   padding: 0px;
   width: 100%;
   height: 100%;
+
+}
+
+#ava-mouth {
+  position: absolute;
+  width: 600px;
+  left: -100%;
+  top: 250px;
+
+  padding: 0px;
+  margin: 0px;;
+
+  -webkit-box-shadow: 0px 15px 27px -3px rgba(0,0,0,0.19);
+  -moz-box-shadow: 0px 15px 27px -3px rgba(0,0,0,0.19);
+  box-shadow: 0px 15px 27px -3px rgba(0,0,0,0.19);
+
+}
+
+#ava-mouth p {
+  /* get a nice sans serif font */
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: large;
+  line-height: 150%;
+
+  background-color: #f8f8f8;
+  border-radius: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 0px;
+
+  /* hard drop shadow */
+  box-shadow:
+
+}
+
+#ava-mouth p:first-letter {
+  text-transform: capitalize;
 }

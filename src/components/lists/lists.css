@@ -1,24 +1,15 @@
-.mdl-background {
-  background-color: rgba(0, 0, 0, 0.0);
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  z-index: 999;
-  top: 0px;
-  left: 0px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .mdl-list {
+  margin: 0 auto;
+  margin-top: 200px;
   width: 500px;
-  background-color: #fff;
-  border-radius: 8px;
+  background-color: #f8f8f8;
+  border-radius: 16px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  overflow-y: auto;
-  max-height: 80vh;
+
+  -webkit-box-shadow: 0px 15px 27px -3px rgba(0,0,0,0.19);
+  -moz-box-shadow: 0px 15px 27px -3px rgba(0,0,0,0.19);
+  box-shadow: 0px 15px 27px -3px rgba(0,0,0,0.19);
 }
 
 .mdl-list-title {

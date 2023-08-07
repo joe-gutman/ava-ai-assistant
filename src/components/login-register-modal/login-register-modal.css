@@ -24,6 +24,10 @@
   transform: translate(-50%, -50%);
 
   background-color: white;
+
+  -webkit-box-shadow: 0px 15px 27px -3px rgba(0,0,0,0.19);
+  -moz-box-shadow: 0px 15px 27px -3px rgba(0,0,0,0.19);
+  box-shadow: 0px 15px 27px -3px rgba(0,0,0,0.19);
 }
 
 #mdl-login-form, #mdl-register-form{
@@ -47,6 +51,7 @@
   border-radius: 2px;
 
   border: 0px;
+  font-weight: bold;
 }
 .mdl-login-buttons:hover, .mdl-register-buttons:hover{
   width: 150px;
@@ -57,8 +62,20 @@
   -moz-border-radius: 2px;
   border-radius: 2px;
 
-  background-color: rgb(210, 210, 210);
+  background-color: #f8f8f8;
   cursor: pointer;
+}
+
+#mdl-login-btn:hover, #mdl-register-btn:hover {
+  /* green */
+  background-color: rgb(22, 172, 62);
+  color: white;
+}
+
+.mdl-cancel-btn:hover {
+  /* red */
+  background-color: rgb(237, 63, 14);
+  color: white;
 }
 
 .mdl-background {
@@ -117,6 +134,7 @@
   height: 35px;
   padding: 2px;
   margin: 10px;
+  cursor: pointer;
 }
 
 #mdl-current-user, #mdl-new-user {
