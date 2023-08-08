@@ -44,9 +44,9 @@ Before you get started with Ava, make sure you have the following:
 
 ## :white_check_mark: Optional Features
 
-Ava comes with additional optional features that enhance the user experience:
+Ava comes with accessibility features that enhance the user experience:
 
-- **Text Input Fields:** While Ava primarily supports voice input, I've included optional text input fields for scenarios where voice input might not be feasible or preferred.
+<!--- - **Text Input Fields:** While Ava primarily supports voice input, I've included optional text input fields for scenarios where voice input might not be feasible or preferred.--->
 
 - **Onscreen Responses:** By default, Ava uses Amazon Polly for voice responses, but I understand that some users may prefer onscreen responses. You can enable this option in the settings to receive onscreen responses instead of voice responses.
 
@@ -57,7 +57,7 @@ For the best experience with Ava, I recommend the following hardware setup:
 - Microphone: Ava is designed to work seamlessly with a microphone, enabling you to interact through voice commands effectively.
 
 - Speakers: To hear Ava's responses and feedback, I recommend using speakers or headphones.
-
+<!---
 ## :rocket: Getting Started
 
 ### Option 1: Cloning the Repository
@@ -93,7 +93,7 @@ I welcome contributions from the community to help Ava grow and evolve. Whether 
 
 - **Feedback and Ideas:** I value feedback and new ideas that can help improve Ava. You can share your thoughts through the [Issue Tracker](https://github.com/jddg5wa/Ava-AI-Assistant/issues), with the feedback label, or by reaching out to me via email at [jddg5wa@gmail.com](mailto:jddg5wa@gmail.com).
 
-As a solo developer, your contributions play a crucial role in the success of Ava, and I'm grateful for your support!
+As a solo developer, your contributions play a crucial role in the success of Ava, and I'm grateful for your support! --->
 
 <!-- Please note that by contributing to Ava, you agree to abide by the [Code of Conduct](link_to_code_of_conduct), ensuring a positive and inclusive community. -->
 
