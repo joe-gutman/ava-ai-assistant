@@ -1,6 +1,6 @@
 # Logs
 logs
-*.log
+*.logw
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -13,7 +13,6 @@ dist-ssr
 *.local
 .env
 ava-ai-assistant-acc8a-firebase-adminsdk-r74e3-c4dc4df368.json
-AVA_AI_Assistant_OLD
 
 # Editor directories and files
 .vscode/*
@@ -25,3 +24,4 @@ AVA_AI_Assistant_OLD
 *.njsproj
 *.sln
 *.sw?
+AVA_AI_Assistant_OLD

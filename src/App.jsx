@@ -34,42 +34,63 @@ function App() {
     thinking: '🤔',
     speaking: '😮',
   });
-  const [aiText, setAiText] = useState('');
-  const [aiSpokenResponse, setAISpokenResponse] = useState('');
+  const [aiResponse, setAIResponse] = useState('');
   const [audioLength, setAudioLength] = useState(0);
+
+
+  // -------- takes in a string and returns true if it is a command --------
+  const isCommand = async(recognizedSpeech) => {
+    let prompt = `Given a user's statement "${recognizedSpeech}", determine whether the statement is intended as a command for an AI assistant named Ava.
+
+    For context, Ava responds to commands when they contain her name or a similar trigger word like 'Eva'.
+
+    Here are some examples:
+
+        If the user says "Hey Ava, what's the weather like today?", it's intended as a command for Ava.
+        If the user says "I was talking to Ava about the weather.", it's not a command for Ava.
+
+    Please respond with 'true' if the statement is a command for Ava, and 'false' if it is not.`
+
+    if (recognizedSpeech.toLowerCase().includes("ava") || recognizedSpeech.toLowerCase().includes("eva")) {
+      var  response = await AskAI(prompt);
+      //response will show up in the form of (true: command type)
+      if (response) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
 
   const chatGPTTransform = async (text) => {
     const response = await AskAI(text);
     if (response) {
       const audio = await TextToSpeech(response);
+      setAIResponse(response);
       PlayAudio(audio);
     }
   }
 
-  //speech recognition and voice response function
-  const handleSpeech = () => {
-    const triggers = ['hello ava', 'hi ava', 'hey ava'];
+  const handleSpeech = async () => {
+    const prompt = AI.Identity.identity + AI.Commands.instructions + AI.Commands.commands + AI.Commands.handleLists + AI.Commands.handleConversation + AI.Commands.emoji + AI.Commands.initialize;
 
     if (user !== undefined) {
       const handlePhrase = async (phrase) => {
         console.log('Heard:', phrase);
 
-        for (let trigger of triggers) {
-          if (phrase.toLowerCase().startsWith(trigger)) {
-            setAvaFace(avaEmotion.thinking);
-            const command = phrase.replace(trigger, '').trim();
-            const response = await AskAI(prompt + command + '.');
-            if (response) {
-              var aiResponse = JSON.parse(response.toLowerCase());
-              setCommand(aiResponse);
-              setAvaFace(aiResponse.emoji);
-              const audio = await TextToSpeech(aiResponse.response);
-              setAISpokenResponse(aiResponse.response);
-              PlayAudio(audio);
-            }
+        if ( await isCommand(phrase)) {
+          setAvaFace(avaEmotion.thinking);
+          const response = await AskAI(prompt + phrase + '.');
+          if (response) {
+            var gptResponse = JSON.parse(response.toLowerCase());
+            setCommand(gptResponse);
+            setAvaFace(gptResponse.emoji);
+            const audio = await TextToSpeech(gptResponse.response);
+            setAIResponse(gptResponse.response);
+            PlayAudio(audio);
           }
         }
-      };
+      }
 
       const recognition = InitializeSpeechRecognition(handlePhrase);
 
@@ -88,10 +109,10 @@ function App() {
 
       setSpeaking(true);
       setTimeout(() => {
-        console.log('Done speaking')
+        console.log('done speaking');
         setAvaFace(avaEmotion.neutral);
         setSpeaking(false);
-      }, audioLength * 1000);
+      }, decodedBuffer.duration * 1000);
 
       const source = audioContext.createBufferSource();
       source.buffer = decodedBuffer;
@@ -102,38 +123,9 @@ function App() {
     });
   };
 
-  // const avaFaceSwap = async (length, ...emoji) => {
-  //   const max = 5000;
-  //   const min = 1000;
-  //   const totalDuration = length * 1000;
-  //   let elapsed = 0;
-
-  //   // Convert emoji parameters to an array of emojis
-  //   const emojis = emoji.flat();
-
-  //   const swapEmojis = () => {
-  //     if (elapsed >= totalDuration) {
-  //       return;
-  //     }
-
-  //     const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
-  //     setAvaFace(randomEmoji);
-
-  //     const nextInterval = Math.floor(Math.random() * (max - min) + min);
-  //     elapsed += nextInterval;
-  //     setTimeout(swapEmojis, nextInterval);
-  //   };
-
-  //   swapEmojis();
-  // };
-
   useEffect(() => {
-    console.log(aiText);
-  }, [aiText]);
-
-  useEffect(() => {
-    console.log(aiSpokenResponse);
-  }, [aiSpokenResponse]);
+    console.log(aiResponse);
+  }, [aiResponse]);
 
   useEffect(() => {
     const prompt = AI.Identity.identity + AI.Commands.instructions + AI.Commands.commands + AI.Commands.handleLists + " you have these lists: "+ lists.toString() + AI.Commands.handleConversation + AI.Commands.emoji + AI.Commands.initialize;
@@ -146,10 +138,9 @@ function App() {
     } else {
       // const audio = new Audio('./assets/startup.mp3');
       // audio.play();
-      const prompt = AI.User.user + AI.Identity.identity + AI.Startup.startup + AI.Startup.greeting + AI.Startup.help + "be short and concise" + AI.Commands.initialize;
+      // const prompt = AI.User.user + AI.Identity.identity + AI.Startup.startup + AI.Startup.greeting + AI.Startup.help + " be short and concise, don't make a long introduction, only ask one question" + AI.Commands.initialize;
       // chatGPTTransform(prompt);
-      handleSpeech();
-
+      const recognition = InitializeSpeechRecognition(handleSpeech);
     }
   }, [user]);
 
@@ -184,7 +175,7 @@ function App() {
     return (
       <>
         <Header userInfo={userInfo} setUserInfo={setUserInfo} />
-        {createPortal(<Ava avaFace={avaFace} avaMini={avaMini} aiText={aiText} aiSpokenResponse={aiSpokenResponse} audioLength={audioLength} />,document.body)}
+        {createPortal(<Ava avaFace={avaFace} avaMini={avaMini} aiResponse={aiResponse} audioLength={audioLength} />,document.body)}
         <Lists user={user} command={command} universalHide={universalHide} lists={lists} setLists={setLists} setAvaMini={setAvaMini} />
       </>
     );
