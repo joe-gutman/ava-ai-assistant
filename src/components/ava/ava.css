@@ -4,12 +4,10 @@
 
 #ava {
   /* border: 1px solid black; */
-  position: relative;
-  width: 200px;
-  height: 200px;
+  display: flex;
+  flex-direction: column;
   border-radius: 10%;
   margin: 0 auto;
-  top: 50px;
 
   justify-content: center;
   align-items: center;
@@ -18,12 +16,18 @@
   z-index: 1000;
 }
 
-#ava p {
-  position: absolute;
-  float: left;
-  top: 0;
-  margin: 0px;
-  padding: 0px;
-  width: 100%;
-  height: 100%;
+#ava-face p {
+  margin-top: 50px;
+  margin-bottom: 0px;
+
+}
+
+#ava-mouth p {
+  max-width: 500px;
+  background-color: #fff;
+  font-size: large;
+  margin: 0 auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
 }

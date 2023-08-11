@@ -35,41 +35,82 @@ function App() {
     speaking: '😮',
   });
   const [aiResponse, setAIResponse] = useState('');
+  const [aiTypedResponse, setAITypedResponse] = useState('');
   const [audioLength, setAudioLength] = useState(0);
+  const currentIndexRef = useRef(0);
+  const delay = 60;
+
+  function capitalizeText(text) {
+    // Split into sentences based on different delimiters
+    let sentences = text.replace(/([.!?])\s*(?=[A-Za-z])/g, "$1|").split("|");
+
+    // Capitalize the first letter of each sentence and handle the word "I"
+    sentences = sentences.map(sentence => {
+      sentence = sentence.trim();
+      sentence = sentence.charAt(0).toUpperCase() + sentence.slice(1);
+      sentence = sentence.replace(/\bi\b/g, "I"); // Capitalize "I" when it appears alone
+      return sentence;
+    });
+
+    // Join the sentences back together
+    return sentences.join(" ");
+  }
 
 
   // -------- takes in a string and returns true if it is a command --------
   const isCommand = async(recognizedSpeech) => {
-    let prompt = `Given a user's statement "${recognizedSpeech}", determine whether the statement is intended as a command for an AI assistant named Ava.
+    let prompt = `Given a user's statement "${recognizedSpeech}", determine whether the statement is intended as a command for an AI assistant named Ava. Commands may not always start with her name or a similar trigger word like 'Eva'; the context and structure of the sentence must be considered. There may be sentences before the command, that is okay. Commands may be complex and include multiple sentences.
 
-    For context, Ava responds to commands when they contain her name or a similar trigger word like 'Eva'.
+    Here are some examples to guide your analysis:
 
-    Here are some examples:
-
-        If the user says "Hey Ava, what's the weather like today?", it's intended as a command for Ava.
+        If the user says "What's the weather Ava, today?", it's intended as a command for Ava.
         If the user says "I was talking to Ava about the weather.", it's not a command for Ava.
+        If the user says "I could be like I need a new groceries list Eva, can you do that for me?", it is a command for Ava.
+        If the user says "Like, oh yeah, the weather is nice. Hey Ava, can you create a new list for me?", it's a command for Ava.
 
-    Please respond with 'true' if the statement is a command for Ava, and 'false' if it is not.`
+     Carefully analyze the syntax, semantics, and context of the statement to understand whether it is an instruction directed at Ava, rather than merely mentioning her name or using a similar trigger word.
+
+     If the user sounds like they are doing a presentation and they said something like "ava could" or "would" or "should" it is actually a command for Ava. Like if the user is trying to show Ava to someone else it is a command.
+
+     Example: "create that so then now if i'm talking and i'm like showing you ava and i'm like yeah if ava should be able to now show me the groceries list" is a command for Ava.
+
+     "ava should be able to now show me the groceries list" is a 'true' command.
+
+     "okay so can you also then delete the adventures list ava" is a command for Ava.
+
+     Please respond with 'true' if the statement is a command for Ava, and 'false' if it is not.`
+
 
     if (recognizedSpeech.toLowerCase().includes("ava") || recognizedSpeech.toLowerCase().includes("eva")) {
-      var  response = await AskAI(prompt);
+      // var  response = await AskAI(prompt);
       //response will show up in the form of (true: command type)
-      if (response) {
-        return true;
-      } else {
-        return false;
-      }
+      // console.log("Is Command: " + response.toLowerCase(), typeof response);
+      console.log(recognizedSpeech);
+      return true;
+      // if ( response.trim().toLowerCase() === "true") {
+      // } else {
+      //   return false;
+      // }
     }
   }
 
-  const chatGPTTransform = async (text) => {
-    const response = await AskAI(text);
-    if (response) {
-      const audio = await TextToSpeech(response);
-      setAIResponse(response);
-      PlayAudio(audio);
+  useEffect(() => {
+    if (aiResponse.length > 0) {
+      const timeout = setTimeout(updateCurrentText, delay);
+      return () => clearTimeout(timeout);
     }
-  }
+  }, [aiResponse]);
+
+  const updateCurrentText = () => {
+    if (currentIndexRef.current < aiResponse.length) {
+      const currentChar = aiResponse.charAt(currentIndexRef.current);
+      if (currentChar) {
+        setAITypedResponse((prevText) => prevText + currentChar);
+      }
+      currentIndexRef.current++;
+      setTimeout(updateCurrentText, delay);
+    }
+  };
 
   const handleSpeech = async () => {
     const prompt = AI.Identity.identity + AI.Commands.instructions + AI.Commands.commands + AI.Commands.handleLists + AI.Commands.handleConversation + AI.Commands.emoji + AI.Commands.initialize;
@@ -84,9 +125,9 @@ function App() {
           if (response) {
             var gptResponse = JSON.parse(response.toLowerCase());
             setCommand(gptResponse);
+            setAIResponse(capitalizeText(gptResponse.response));
             setAvaFace(gptResponse.emoji);
             const audio = await TextToSpeech(gptResponse.response);
-            setAIResponse(gptResponse.response);
             PlayAudio(audio);
           }
         }
@@ -94,9 +135,11 @@ function App() {
 
       const recognition = InitializeSpeechRecognition(handlePhrase);
 
-      return () => {
-        if (recognition) recognition.stop();
-      };
+      // return () => {
+      //   if (recognition) {
+      //     recognition.stop();
+      //   }
+      // };
     }
   };
 
@@ -175,7 +218,7 @@ function App() {
     return (
       <>
         <Header userInfo={userInfo} setUserInfo={setUserInfo} />
-        {createPortal(<Ava avaFace={avaFace} avaMini={avaMini} aiResponse={aiResponse} audioLength={audioLength} />,document.body)}
+        {createPortal(<Ava avaFace={avaFace} aiTypedResponse={aiTypedResponse} />,document.body)}
         <Lists user={user} command={command} universalHide={universalHide} lists={lists} setLists={setLists} setAvaMini={setAvaMini} />
       </>
     );

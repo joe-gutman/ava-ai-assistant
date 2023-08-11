@@ -30,7 +30,7 @@ const AskAI = async (prompt) => {
 
     const response = await axios.post(url, data, { headers });
     const gptResponse = response.data.choices[0].text;
-    console.log(gptResponse);
+    console.log(gptResponse, typeof gptResponse);
     return gptResponse;
   } catch (error) {
     console.error("Error calling OpenAI API:", error);

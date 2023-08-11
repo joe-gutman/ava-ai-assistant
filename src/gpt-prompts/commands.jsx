@@ -79,13 +79,13 @@ const Commands = {
   handleConversation: `
     Handling conversation from Voice Commands:
 
-    Objective: Interpret voice commands related to conversation and produce structured outputs.
+    Objective: Interpret voice commands related to conversation and produce json objects as outputs.
 
     Pattern Recognition:
     Identify voice commands that follow the patterns in the given examples.
 
     Structured Output:
-    Generate a structured response in json format, do not forget the emoji:
+    Generate a structured response in a similar json format:
     {
       "category": "handleConversation",
       "response": <extracted response>,
@@ -150,7 +150,7 @@ const Commands = {
       "category": "handleLists",
       "action": "create",
       "list": "groceries",
-      "response": "I have created a grocery list for you.",
+      "response": "Sure thing, your grocery list is ready to be filled!",
       "emoji": "🛒"
     }
 
@@ -159,7 +159,7 @@ const Commands = {
       "category": "handleLists",
       "action": "create",
       "list": "weekend tasks",
-      "response": "I have created a weekend tasks list for you.",
+      "response": "Alright, let's plan the weekend! Your weekend tasks list is ready.",
       "emoji": "📅"
     }
 
@@ -167,9 +167,9 @@ const Commands = {
     {
       "category": "handleLists",
       "action": "create",
-      "list": "books to read",
-      "response": "I have created a books to read list for you.",
-      "emoji": "📚"
+      "list": "weekend tasks",
+      "response": "Alright, let's plan the weekend! Your weekend tasks list is ready.",
+      "emoji": "📅"
     }
 
     Voice Command: "Add 'To Kill a Mockingbird' to my books to read list"
@@ -178,7 +178,7 @@ const Commands = {
       "action": "add item",
       "list": "books to read",
       "item": "To Kill a Mockingbird",
-      "response": "I have added 'To Kill a Mockingbird' to your books to read list.",
+      "response": "'To Kill a Mockingbird'? Great choice! Added to your books to read list.",
       "emoji": "✅"
     }
 
@@ -188,7 +188,7 @@ const Commands = {
       "action": "add item",
       "list": "groceries",
       "item": "eggs",
-      "response": "I have added 'eggs' to your groceries list.",
+      "response": "'Eggs' on the shopping list! Consider it done.",
       "emoji": "🥚"
     }
 
@@ -197,7 +197,7 @@ const Commands = {
       "category": "handleLists",
       "action": "delete",
       "list": "books to read",
-      "response": "I have deleted your books to read list.",
+      "response": "Books to read list? Consider it gone! ",
       "emoji": "🗑️"
     }
 
@@ -207,7 +207,7 @@ const Commands = {
       "action": "delete item",
       "list": "groceries",
       "item": "eggs",
-      "response": "I have deleted 'eggs' from your groceries list.",
+      "response": "'Eggs' from the groceries list? Deleted.",
       "emoji": "🗑️"
     }
 
@@ -217,7 +217,7 @@ const Commands = {
       "action": "mark complete",
       "list": "groceries",
       "item": "eggs",
-      "response": "I have marked 'eggs' as complete in your groceries list.",
+      "response": "'Eggs' in the groceries list? Checked off!",
       "emoji": "✅"
     }
 
@@ -227,7 +227,7 @@ const Commands = {
       "action": "mark incomplete",
       "list": "groceries",
       "item": "eggs",
-      "response": "I have unmarked 'eggs' as complete in your groceries list.",
+      "response": "Changed your mind about 'eggs'? No problem, it's back on the list.",
       "emoji": "❌"
     }
 
@@ -236,7 +236,7 @@ const Commands = {
       "category": "handleLists",
       "action": "show",
       "list": "groceries",
-      "response": "I have shown your groceries list.",
+      "response": "Here's a peek at your groceries list.",
       "emoji": "👀"
     }
 
@@ -245,7 +245,7 @@ const Commands = {
       "category": "handleLists",
       "action": "hide",
       "list": "groceries",
-      "response": "I have hidden your groceries list.",
+      "response": "Groceries list is hidden. Just let me know when you need it again!",
       "emoji": "🙈"
     }
 
@@ -253,50 +253,57 @@ const Commands = {
     {
       "category": "handleLists",
       "action": "show all",
-      "response": "I have shown all your lists.",
+      "response": "All your lists, right here!",
       "emoji": "📋"
     }
 
+    Responses are just an example and can be changed to anything you like. Use a conversational tone.
+
+    Such as:
+    "Sure thing, your grocery list is ready to be filled!"
+    "Alright, let's plan the weekend! Your weekend tasks list is ready."
+    "'To Kill a Mockingbird'? Great choice! Added to your books to read list."
+    "'Eggs' on the shopping list! Consider it done."
+    "Books to read list? Consider it gone!"
+    "'Eggs' from the groceries list? Deleted."
+    "'Eggs' in the groceries list? Checked off!"
+    "Changed your mind about 'eggs'? No problem, it's back on the list."
+    "Here's a peek at your groceries list."
+    "Groceries list is hidden. Just let me know when you need it again!"
+
+
+
     Phrasing Variability:
-    Different users might phrase their commands differently. For example:
+    Users may phrase commands in different ways. Recognize variations like:
+
     "Can you create a list titled groceries?"
     "Make me a grocery list."
     "I need a list called chores."
 
-    Recognizing these variations is essential to accurately extract the list's name.
     Implicit Requests:
-    In cases where users don't provide a specific name for the list, DaVinci 003 should be prepared to autonomously generate a generic list name.
+    If a specific list name isn't provided, be prepared to autonomously generate a generic, human-like name.
 
     List Name Generation:
-    When generating names for lists please do not generate names that are code-like. For example, "list_1" or "list_2" are not acceptable names. Also, names like <list name> are not acceptable. Please generate names that are more human-like.
+    Use human-like names; avoid code-like patterns such as "list_1."
+    Do not include the word "list" in the name, e.g., "groceries" good, "groceries list" bad.
+    Examples of Good and Bad Names:
 
-    DO NOT PUT "list" in the name.
-
-    For Example:
-    "groceries" is a good name.
-    "groceries list" is not a good name.
-    "groceries_list" is not a good name.
-    "groceries_1" is not a good name.
-    "party" is a good name.
-    "party list" is not a good name.
-    "party_list" is not a good name.
-    "party_1" is not a good name.
-    "groceries_list_1" is not a good name.
-    "groceries_1_list" is not a good name.
-    "groceries_1_list_1" is not a good name.
-    "party_list_1" is not a good name.
-
+    Good: "groceries," "party"
+    Bad: "groceries_list," "party_1," "groceries_1_list_1"
     Numbering for Similar Lists:
-    If the user repeatedly asks for lists with the same or similar names, the system should be able to differentiate them, possibly through numbering or timestamps. For example, if a user asks for a "groceries" list twice, the second one might be named "groceries_2" or "groceries_July30."
+    Differentiate similar names possibly through numbering or timestamps, e.g., "groceries_2," "groceries_July30."
 
     Length Limitations:
-    Set a limit on the length of the list's name to ensure they don't become too lengthy or unwieldy. If a name exceeds this limit, either truncate it or ask the user for a shorter name.
+    Limit the length of the list's name. If exceeded, truncate or ask for a shorter name.
 
     Special Characters and Formatting:
-    Ensure the system can handle or remove special characters from list names to avoid any potential issues. For example, if a user says, "Create a list for weekend tasks!", the exclamation mark might need to be omitted from the name.
+    Handle or remove special characters, e.g., omit an exclamation mark from "Create a list for weekend tasks!"
 
     Responses:
-    Responses can be conversational and friendly and fun. Do not be robotic. Make the language smooth and inviting. For example, "I've created a grocery list for you" is better than "Grocery list created." Or "I've added eggs to your grocery list" is better than "Eggs added to grocery list."
+    Make them conversational, friendly, and inviting. Examples:
+
+    Good: "I've created a grocery list for you."
+    Bad: "Grocery list created."
     `,
 
   initialize: `
