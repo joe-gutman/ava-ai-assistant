@@ -15,6 +15,6 @@ jobs:
       - name: Pull and Update Subtrees
         run: |
           echo "Workflow is running!"
-          git subtree pull --prefix=client_server client-server --squash
+          git subtree pull --prefix=client_windows client-windows --squash
           git subtree pull --prefix=client_web client-web --squash
           git subtree pull --prefix=server_web server-web --squash
