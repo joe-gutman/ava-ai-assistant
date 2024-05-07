@@ -1,17 +1,20 @@
-# Define the branches to sync
-branches=("server-web" "client-web" "client-windows")
+# Get the current working directory
+cwd=$(pwd)
 
-# Loop through each branch
-for branch_name in "${branches[@]}"; do
-    # Sync Branch Files
-    branch_folder_name=$(echo $branch_name | sed 's/-/_/g')
-    mkdir -p $branch_folder_name
-    cd $branch_folder_name
-    git checkout $branch_name -- "*/"
+# Get the list of specific branches
+specific_branches=(server-web client-web client-windows)
 
-    # List copied files
-    echo "Copied files for branch: $branch_name"
-    ls -l $branch_folder_name
-    echo ""
+# Iterate through each specific branch
+for branch in "${specific_branches[@]}"
+do
+    # Add the branch as a subtree and switch to it
+    subtree_name=${branch//-/_}
+    git subtree add --prefix=$subtree_name origin/$branch
+    cd $subtree_name
+
+    # Pull the subtree to update it
+    git pull
+
+    # Go back to the main directory
     cd ..
 done
