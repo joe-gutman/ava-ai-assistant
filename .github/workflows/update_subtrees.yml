@@ -1,15 +1,17 @@
 name: Update Subtrees
 
 on:
-  pull_request:
+  pull_request_target:
     branches:
       - server-web
       - client-windows
       - client-web
-    types: [merged]
+    types: 
+      - closed
 
 jobs:
   update-subtrees:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
