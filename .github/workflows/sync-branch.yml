@@ -29,11 +29,12 @@ jobs:
 
       - name: Create working directory
         run: |
-          mkdir -p (${{ github.event.inputs.branch-name }} | sed 's/-/_/g')
+          branch_name="$(echo ${{ github.event.inputs.branch-name }} | sed 's/-/_/g')"
+          mkdir -p $branch_name
 
       - name: Copy files from branch
         run: |
-          cd (${{ github.event.inputs.branch-name }} | sed 's/-/_/g')
+          cd $branch_name
           git checkout ${{ github.event.inputs.branch-name }} -- '*'
 
       - name: List copied files
