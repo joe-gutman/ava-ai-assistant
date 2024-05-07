@@ -12,14 +12,13 @@ specific_branches=(server-web client-web client-windows)
 for branch in "${specific_branches[@]}"
 do
     # Check if the subdirectory already exists
-    subtree_name=${branch//-/_}
-    if [ ! -d "$subtree_name" ]; then
+    subtree_folder_name=${branch//-/_}
+    if [ ! -d "$subtree_folder_name" ]; then
         # Add a commit before adding the subtree
         git commit -am "Syncing branch $branch"
 
         # Add the branch as a subtree and switch to it
-        git subtree add --prefix=$subtree_name origin/$branch
-        cd $subtree_name
+        git subtree add --prefix=$subtree_folder_name origin/$branch --squash
     fi
 
     # Pull the subtree to update it
