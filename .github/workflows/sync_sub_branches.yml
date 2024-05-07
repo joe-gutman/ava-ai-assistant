@@ -7,20 +7,14 @@ on:
 jobs:
   sync_branch:
     if: |
-      github.event.pull_request.merged == true &&
-      github.event.pull_request.base.ref != 'main' && 
-      (
-        github.event.pull_request.base.ref == 'server-web' ||
-        github.event.pull_request.base.ref == 'client-web' ||
-        github.event.pull_request.base.ref == 'client-windows'
-      )
+      github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     
     steps:
       - name: Set up Git identity
         run: |
-          git config --global user.email "you@example.com"
-          git config --global user.name "Your Name"
+          git config --global user.email "joe@brownboxstudio.com"
+          git config --global user.name "joegutman"
 
       - name: Checkout main branch
         uses: actions/checkout@v2
