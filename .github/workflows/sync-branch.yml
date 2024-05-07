@@ -22,6 +22,12 @@ jobs:
           git config --global user.email "joe@brownboxstudio.com"
           git config --global user.name "joegutman"
 
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: List branches
+        run: git branch
+
       - name: Sync Branch Files
         run: |
           branch_folder_name="$(echo ${{ github.event.inputs.branch-name }} | sed 's/-/_/g')"
