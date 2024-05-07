@@ -2,7 +2,8 @@ name: Sync Sub-Branch with Main
 
 on:
   pull_request:
-    types: [closed]
+    types: 
+      - closed
 
 jobs:
   sync_branch:
