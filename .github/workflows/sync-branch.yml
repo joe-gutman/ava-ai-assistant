@@ -22,20 +22,11 @@ jobs:
           git config --global user.email "joe@brownboxstudio.com"
           git config --global user.name "joegutman"
 
-      - name: Checkout main branch
-        uses: actions/checkout@v2
-
-      - name: Create and move into branch name directory
+      - name: Sync Branch Files
         run: |
-          branch_name="$(echo ${{ github.event.inputs.branch-name }} | sed 's/-/_/g')"
-          mkdir -p $branch_name
-          ls
-          git branch
-          cd $branch_name
-
-
-      - name: Copy files from branch
-        run: |
+          branch_folder_name="$(echo ${{ github.event.inputs.branch-name }} | sed 's/-/_/g')"
+          mkdir -p $branch_folder_name
+          cd $branch_folder_name
           git checkout ${{ github.event.inputs.branch-name }} -- '*'
 
       - name: List copied files
