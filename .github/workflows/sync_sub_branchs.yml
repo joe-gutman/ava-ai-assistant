@@ -1,15 +1,15 @@
 name: Sync Sub-Branch with Main
 
 on:
-  pull_request:
-    types: [closed]
+  pull_request_target:
+    types: 
+      - closed
 
 jobs:
   sync_branch:
     if: |
       github.event.pull_request.merged == true
       github.event.pull_request.base.ref != 'main'
-      (github.event.pull_request.base.ref == 'server-web' || github.event.pull_request.base.ref == 'client-web' || github.event.pull_request.base.ref == 'client-windows')
     runs-on: ubuntu-latest
     
     steps:
