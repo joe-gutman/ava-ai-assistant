@@ -20,11 +20,11 @@ do
         git subtree add --prefix=$subtree_folder_name origin/$branch --squash
     fi
 
-    # Pull the subtree to update it
+   # Pull the subtree to update it
     git pull
 
     # Add a commit before adding the subtree
     git add .
-    git commit -am "Syncing branch $branch"
+    git commit -am "Syncing branch $branch" 
 
 done
