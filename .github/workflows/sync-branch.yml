@@ -27,14 +27,14 @@ jobs:
         with:
           ref: main
 
-      - name: Create working directory
+      - name: Create and move into branch name directory
         run: |
           branch_name="$(echo ${{ github.event.inputs.branch-name }} | sed 's/-/_/g')"
           mkdir -p $branch_name
+          cd $branch_name
 
       - name: Copy files from branch
         run: |
-          cd $branch_name
           git checkout ${{ github.event.inputs.branch-name }} -- '*'
 
       - name: List copied files
