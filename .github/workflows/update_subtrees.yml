@@ -1,0 +1,20 @@
+name: Update Subtrees
+
+on:
+  pull_request:
+    branches:
+      - server-web
+      - client-server
+      - client-web
+
+jobs:
+  update-subtrees:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Pull and Update Subtrees
+        run: |
+          git subtree pull --prefix=client_server client-server --squash
+          git subtree pull --prefix=client_web client-web --squash
+          git subtree pull --prefix=server-web server-web --squash
