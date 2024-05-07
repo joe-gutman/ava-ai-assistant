@@ -1,13 +1,13 @@
 name: Sync Branch with Main into Sub-Folder
 
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
     inputs:
-        branch-name:
-          type: choice
-          description: 'Name of the branch to sync with main'
-          required: true
-          options: 
+      branch-name:
+        type: choice
+        description: 'Name of the branch to sync with main'
+        required: true
+        options: 
           - server-web
           - client-web
           - client-windows
@@ -27,17 +27,14 @@ jobs:
         with:
           ref: main
 
-      - name: Checkout branch to sync
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.inputs.branch-name }}
-
-      - name: Move files to folder
+      - name: Create working directory
         run: |
-          mv ./* ./${{ github.event.inputs.branch-name//[-]/_ }}
+          branch_name="${{ github.event.inputs.branch-name//-/_ }}"
+          mkdir -p $branch_name
 
-      - name: Add, commit, and push changes
-        run: |
-          git add .
-          git commit -m "Sync ${{ github.event.inputs.branch-name }} with main branch"
-          git push
+      - name: Copy files from branch
+        run: git checkout ${{ github.event.inputs.branch-name }} -- '*'
+        working-directory: ./$branch_name
+
+      - name: List copied files
+        run: ls -l
