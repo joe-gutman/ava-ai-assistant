@@ -4,9 +4,9 @@ on:
   pull_request:
     branches:
       - server-web
-      - client-server
+      - client-windows
       - client-web
-    types: [closed]
+    types: [merged]
 
 jobs:
   update-subtrees:
