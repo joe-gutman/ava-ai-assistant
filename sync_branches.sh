@@ -15,6 +15,7 @@ do
     subtree_folder_name=${branch//-/_}
     if [ ! -d "$subtree_folder_name" ]; then
         # Add a commit before adding the subtree
+        git add .
         git commit -am "Syncing branch $branch"
 
         # Add the branch as a subtree and switch to it
