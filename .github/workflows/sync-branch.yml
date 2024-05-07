@@ -1,6 +1,3 @@
-imports:
-  - actions/core
-
 name: Sync Branch with Main into Sub-Folder
 
 on:
@@ -10,7 +7,7 @@ on:
         type: choice
         description: 'Name of the branch to sync with main'
         required: true
-        options: 
+        options:
           - server-web
           - client-web
           - client-windows
@@ -31,11 +28,14 @@ jobs:
           ref: main
 
       - name: Create working directory
-        run: mkdir -p ${{ replace(github.event.inputs.branch-name, '-', '_') }}
+        run: |
+          branch_name="${{ github.event.inputs.branch-name }}"
+          mkdir -p "${branch_name//-/_}"
 
       - name: Copy files from branch
-        run: git checkout ${{ github.event.inputs.branch-name }} -- '*'
-        working-directory: ./$branch_name
+        run: |
+          git checkout ${{ github.event.inputs.branch-name }} -- '*'
+        working-directory: ./${branch_name//-/_}
 
       - name: List copied files
         run: ls -l
