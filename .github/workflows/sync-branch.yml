@@ -31,7 +31,9 @@ jobs:
         run: |
           branch_name="$(echo ${{ github.event.inputs.branch-name }} | sed 's/-/_/g')"
           mkdir -p $branch_name
+          ls
           cd $branch_name
+
 
       - name: Copy files from branch
         run: |
