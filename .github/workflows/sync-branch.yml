@@ -32,6 +32,7 @@ jobs:
           branch_name="$(echo ${{ github.event.inputs.branch-name }} | sed 's/-/_/g')"
           mkdir -p $branch_name
           ls
+          git branch
           cd $branch_name
 
 
