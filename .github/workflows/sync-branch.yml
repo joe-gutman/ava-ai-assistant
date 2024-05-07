@@ -1,3 +1,6 @@
+imports:
+  - actions/core
+
 name: Sync Branch with Main into Sub-Folder
 
 on:
