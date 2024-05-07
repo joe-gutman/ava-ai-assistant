@@ -28,9 +28,7 @@ jobs:
           ref: main
 
       - name: Create working directory
-        run: |
-          branch_name="${{ github.event.inputs.branch-name//[-]/_ }}"
-          mkdir -p $branch_name
+        run: mkdir -p ${{ replace(github.event.inputs.branch-name, '-', '_') }}
 
       - name: Copy files from branch
         run: git checkout ${{ github.event.inputs.branch-name }} -- '*'
