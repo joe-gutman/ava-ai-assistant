@@ -6,7 +6,10 @@ on:
 
 jobs:
   sync_branch:
-    if: github.event.pull_request.merged == true
+    if: |
+      github.event.pull_request.merged == true
+      github.event.pull_request.base.ref != 'main'
+      (github.event.pull_request.base.ref == 'server-web' || github.event.pull_request.base.ref == 'client-web' || github.event.pull_request.base.ref == 'client-windows')
     runs-on: ubuntu-latest
     
     steps:
