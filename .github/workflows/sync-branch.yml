@@ -27,7 +27,6 @@ jobs:
         with:
           fetch-depth: 0
 
-
       - name: List branches
         run: git branch
 
