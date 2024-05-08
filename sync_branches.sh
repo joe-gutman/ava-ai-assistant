@@ -17,7 +17,7 @@ do
     subtree_folder_name=${branch//-/_}
     if [ ! -d "$subtree_folder_name" ]; then
         # Add the branch as a subtree and switch to it
-        git subtree add --prefix=$subtree_folder_name origin/$branch --squash
+        git subtree add --prefix=$subtree_folder_name origin/$branch
     fi
 
    # Pull the subtree to update it
