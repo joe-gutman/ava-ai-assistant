@@ -2,25 +2,35 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button } from '../Button';
-import { startListening, stopListening } from '../../utils/microphoneUtils';
+import SpeechToText from '../../utils/speechToText';
 
 function AI() {
     const [listening, setListening] = useState(false);
-    const [audioData, setAudioData] = useState(null);
+    const [stt, setSTT] = useState(null) // SpeechToText class instance
+
+    useEffect(() => {
+        const initializeSpeechToText = async () => {
+            const stt = new SpeechToText();
+            await stt.init();
+    
+            if (!stt.isActive()) {
+                console.warn('Failed to initialize speech to text');
+            } else {
+                setSTT(stt);
+            }
+        };
+    
+        initializeSpeechToText();
+    }, [])
 
     const toggleListening = async () => {
         if (!listening) {
-            const audioData = await startListening();
-            setAudioData(audioData);
-            if (audioData) {
-                setListening(true);
-            }
+            await stt.start()
+            setListening(true)
         } else {
-            const stopped = await stopListening(audioData['stream']);
-            if (stopped) {
-                setListening(false);
-                setAudioData(null)
-            }
+            // Stop listening
+            stt.stop();
+            setListening(false)
         }
     };
 
