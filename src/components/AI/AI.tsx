@@ -34,9 +34,9 @@ function AI() {
         }
     };
 
-    useEffect(() => {
-        console.log(`listening: ${listening}`);
-    }, [listening]);
+    // useEffect(() => {
+    //     console.log(`listening: ${listening}`);
+    // }, [listening]);
 
     return (
         <div>
