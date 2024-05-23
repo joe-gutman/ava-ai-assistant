@@ -8,9 +8,8 @@ class SpeechToText {
 		this.transcribedText = "";
 		this.stream = null;
 		this.audioContext = null;
-		this.sampleRate = null;
 		this.node = null;
-		this.silenceThreshold = .05;
+		this.silenceThreshold = .01;
 		this.active = false;
 		this.deepgram = null;
 	}
@@ -19,13 +18,13 @@ class SpeechToText {
         try {
             // Create a new audio context
             this.audioContext = new AudioContext();
-			this.sampleRate = this.audioContext.sampleRate;
-			console.log('Sample Rate:', this.sampleRate)
+			// this.sampleRate = this.audioContext.sampleRate;
+			// console.log('Sample Rate:', this.sampleRate)
 
 
             // Create a new audio stream
             this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-			
+
 			this.active = true;
             console.log('Audio stream created successfully');
 
@@ -54,14 +53,11 @@ class SpeechToText {
 			this.node = new AudioWorkletNode(this.audioContext, 'micVolume');
 
 			this.node.port.onmessage = event => {
-				// console.log(event)
+				console.log(event.data)
 				const audioChunk = event.data.audioChunk || null
-				const volume = event.data.volume || null
-				if (audioChunk && volume) {
-					if (event.data.volume > this.silenceThreshold) {
-						console.log('Sound detected');
-						this.deepgram.sendAudio(audioChunk)
-					}
+				if (audioChunk) {
+					console.log('Audio detected:', audioChunk);
+					this.deepgram.sendAudio(audioChunk)
 				}
 			}
 
