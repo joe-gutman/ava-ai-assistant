@@ -1,0 +1,46 @@
+.prompt, .response, .tail {
+    border-radius: 10px;
+}
+
+.prompt, .response {
+    position: relative;
+    margin-bottom: 15px;
+    padding: 10px 20px;
+    color: white;
+    font-size: 13pt;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+}
+
+.prompt, .tail.right {
+    background-color: rgb(0, 89, 255);
+}
+
+.prompt {
+    align-self: flex-end;
+    margin-right: 15px;
+}
+
+.response {
+    align-self: flex-start;
+    margin-left: 15px;
+    background-color: #F0F0F0;
+}
+
+.tail {
+    position: absolute;
+    width: 50px;
+    height: 25px;
+}
+
+.tail.right {
+    transform: skew(50deg);
+    bottom: 0;
+    right: -5px;
+}
+
+.tail.left {
+    transform: skew(-50deg);
+    bottom: 0;
+    left: 5px;
+}

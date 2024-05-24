@@ -1,15 +1,21 @@
 button {
-    margin: 5px;
-    padding: 10px;
-    border: none;
     background: none;
+    border: none;
+    text-decoration: none;
+
+    display: flex;
+    height: 50px;
+    padding: 10px 20px;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    border-radius: 10px;
     cursor: pointer;
     color: white;
-    font-weight: bold;
-    display: inline-block;
-    vertical-align: middle;
-    text-decoration: none;
-    border-radius: 10px;
+    font-size: 13pt;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 600;
+    white-space: nowrap;
 }
 
 .default {
@@ -36,4 +42,8 @@ button {
 .abort:active {
     background-color: rgb(214, 0, 0);
     color: rgb(228, 228, 228);
+}
+
+.action {
+    background: rgb(0, 189, 0);
 }

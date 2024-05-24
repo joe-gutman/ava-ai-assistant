@@ -1,0 +1,24 @@
+.ai-container {
+    display: grid;
+    overflow: visible;
+    height: 75vh;
+    width: 85%;
+    margin: 0 auto;
+    grid-template-rows: 1fr 60px;
+    grid-gap: 15px;
+}
+
+.text-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 10px 23px;
+    border-radius: 10px;
+    background-color: white;
+}
+
+button.listening {
+    grid-area: 2;
+    display: flex;
+    justify-self: flex-end;
+}

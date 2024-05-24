@@ -1,98 +1,143 @@
-import { callbackify } from "util";
-
-require('dotenv').config();
-const Deepgram = require('../utils/deepgram')
+const { createClient, LiveTranscriptionEvents } = require("@deepgram/sdk");
+const fetch = require("cross-fetch");
+const dotenv = require("dotenv");
+dotenv.config();
 
 class SpeechToText {
 	constructor() {
-		this.transcribedText = "";
+		this.transcribedText = '';
+		this.timeout = 2500; //ms
+		this.socket = null;
 		this.stream = null;
-		this.audioContext = null;
-		this.node = null;
-		this.silenceThreshold = .01;
 		this.active = false;
-		this.deepgram = null;
 	}
 
-	async init() {
-        try {
-            // Create a new audio context
-            this.audioContext = new AudioContext();
-			// this.sampleRate = this.audioContext.sampleRate;
-			// console.log('Sample Rate:', this.sampleRate)
+	async start(callback) {
+		// Get permission from user for microphone access
+		navigator.mediaDevices.getUserMedia({ audio: true })
+			.then(stream => {
+				this.stream = stream;
+				this.active = true;
+				console.log('Starting Speech Recognition')
+
+            	const mediaRecorder = new MediaRecorder(this.stream);
+				
+				// this.socket = new WebSocket('wss://api.deepgram.com/v1/listen', [ 'token', process.env.NEXT_PUBLIC_DEEPGRAM_API_KEY, 'endpointing', 300 ])
+
+				this.deepgram = createClient(process.env.NEXT_PUBLIC_DEEPGRAM_API_KEY);
+
+				// STEP 2: Create a live transcription connection
+				this.connection = this.deepgram.listen.live({
+					model: "nova-2",
+					language: "en-US",
+					smart_format: true,
+					endpointing: 500,
+				});
+
+				// STEP 3: Listen for events from the live transcription connection
+				this.connection.on(LiveTranscriptionEvents.Open, () => {
+					mediaRecorder.addEventListener('dataavailable', event => {
+						if (event.data.size > 0) {
+							console.log('Audio data available:', event.data);
+							console.log({ dataSize: event.data.size});
+							this.connection.send(event.data)
+						}
+					})
+					mediaRecorder.start(100)
+					
+					this.connection.on(LiveTranscriptionEvents.Close, () => {
+						console.log("Connection closed.");
+					});
+
+					this.connection.on(LiveTranscriptionEvents.Transcript, (data) => {
+						console.log(data.channel.alternatives[0].transcript);
+					});
+
+					this.connection.on(LiveTranscriptionEvents.Metadata, (data) => {
+						console.log(data);
+					});
+
+					this.connection.on(LiveTranscriptionEvents.Error, (err) => {
+						console.error(err);
+					});
+				});
 
 
-            // Create a new audio stream
-            this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+				// // Deepgram socket connection is opened
+				// this.socket.onopen = (event) => {
+				// 	console.log(`WebSocket connection opened. Action: ${event.type}`);
+				// 	this.transcribedText = ''
 
-			this.active = true;
-            console.log('Audio stream created successfully');
+				// 	// listen for audio from microphone stream
+				// 	mediaRecorder.addEventListener('dataavailable', event => {
+				// 		if (event.data.size > 0) {
+				// 			console.log('Audio data available:', event.data);
+				// 			console.log({ socketReadyState: this.socket.readyState, dataSize: event.data.size});
+				// 			this.socket.send(event.data)
+				// 		}
+				// 	})
+				// 	mediaRecorder.start(100)
+				// }
 
-			this.deepgram = new Deepgram()
-			await this.deepgram.initialize(process.env.NEXT_PUBLIC_DEEPGRAM_API_KEY);
-        } catch (error) {
-            console.error('Error initializing audio:', error);
-        }
-    }
+				// this.socket.onmessage = (message) => {
+				// 	console.log({ event: 'onmessage', message });
+				// 	const received = JSON.parse(message.data);
 
-	async start() {
-		if(!this.audioContext || !this.stream) {
-			console.warn('Audio context or stream not initialized');
-			return;
+				// 	if (received.channel) {
+				// 		let fullTranscript = '';
+				// 		const transcript = received.channel.alternatives[0].transcript;
+				// 		console.log("Speech final: ", received.speech_final, " Is final: ", received.is_final);
+				// 		if (transcript) {
+				// 			console.log(transcript)
+				// 			this.transcribedText += ' ' + transcript;
+				// 			callback(this.transcribedText.trim(), 'prompt', false);
+
+				// 			if (received.speech_final && received.is_final) {
+				// 				callback(this.transcribedText.trim(), 'prompt', true);
+				// 				this.transcribedText = '';
+				// 			}
+				// 		}
+				// 	}
+				// } 
+				
+				// this.socket.onclose = (event) => {
+				// 	console.log(`WebSocket connection closed.`);
+				// } 
+				
+				// this.socket.onerror = (error) => {
+				// 	console.log(`ERROR: ${error}`);
+				// }
+
+				this.active = true;
+			}).catch ((error) => {
+				console.error('Problem starting speech to text:', error);
+			})
 		}
-
-		try {
-			console.log('Starting Speech Recognition')
-
-			await this.deepgram.startLiveTranscription()
-
-			await this.audioContext.audioWorklet.addModule('/worklets/micVolumeProcessor.tsx');
-
-			let microphone = this.audioContext.createMediaStreamSource(this.stream);
-
-			this.node = new AudioWorkletNode(this.audioContext, 'micVolume');
-
-			this.node.port.onmessage = event => {
-				console.log(event.data)
-				const audioChunk = event.data.audioChunk || null
-				if (audioChunk) {
-					console.log('Audio detected:', audioChunk);
-					this.deepgram.sendAudio(audioChunk)
-				}
-			}
-
-			microphone.connect(this.node);
-			this.active = true;
-
-		} catch (error) {
-			console.error('Problem starting speech to text:', error);
-		}
-	}
 
 	stop() {
-        if (this.node) {
-            this.node.port.postMessage({ stop: true });
-            this.node.disconnect();
-            this.node = null;
+		this.connection.on(LiveTranscriptionEvents.Close, () => {
+			console.log(`WebSocket connection closed.`);
+			this.socket = null;
+		});
+
+        if (this.mediaRecorder) {
+            this.mediaRecorder.stop();
+            this.mediaRecorder = null;
         }
 
-        if (this.audioContext) {
-            this.audioContext.close();
-            this.audioContext = null;
-        }
+        if (this.socket) {
+			const message = JSON.stringify({ type: 'CloseStream' });
+			this.connection.send(message);
+		}
 
-        if (this.stream) {
-            this.stream.getTracks().forEach(track => track.stop());
-            this.stream = null;
-        }
+		if (this.stream) {
+			this.stream.getTracks().forEach(track => track.stop());
+			this.stream = null;
+		}
 
         this.active = false;
-        console.log('Stopping Speech Recognition');
+        console.log('Speech recognition stopped.');
     }
-
-	isActive() {
-		return this.active;
-	}
 }
 
 export default SpeechToText;

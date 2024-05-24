@@ -3,17 +3,18 @@ import './Button.css'
 
 interface ButtonProps {
     onClick?: () => void;
-    variant: 'default' | 'action' | 'abort' | 'quiet';
+    type?: 'default' | 'action' | 'abort' | 'quiet';
     text: string;
     width: number;
+    name?: string;
 }
 
-function Button({ onClick, variant, text, width }: ButtonProps) {
-    const className = variant ? `button ${variant}` : `button default`;
+function Button({ onClick, text = 'button', width = '50', type = '', name = '' }: ButtonProps) {
+    const className = `${type} ${name}`;
 
     return (
         <button className={className} onClick={onClick} style={{width:`${width}px`}}> 
-            {text}
+           <p>{text}</p>
         </button>
     )
 }
