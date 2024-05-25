@@ -66,7 +66,7 @@ function AI() {
             <Button type={listening ? 'abort' : 'action'} 
                     onClick={toggleListening} 
                     text={listening? 'Stop Listening' : 'Start Listening'}
-                    width={150}
+                    width={'100%'}
                     name={'listening'}/>
         </div>
     );

@@ -9,11 +9,11 @@ interface ButtonProps {
     name?: string;
 }
 
-function Button({ onClick, text = 'button', width = '50', type = '', name = '' }: ButtonProps) {
+function Button({ onClick, text = 'button', width = '50px', type = '', name = '' }: ButtonProps) {
     const className = `${type} ${name}`;
 
     return (
-        <button className={className} onClick={onClick} style={{width:`${width}px`}}> 
+        <button className={className} onClick={onClick} style={{width:`${width}`}}> 
            <p>{text}</p>
         </button>
     )

@@ -3,6 +3,7 @@
     overflow: visible;
     height: 75vh;
     width: 85%;
+    max-width: 1100px;
     margin: 0 auto;
     grid-template-rows: 1fr 60px;
     grid-gap: 15px;
