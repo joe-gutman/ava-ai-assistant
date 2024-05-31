@@ -20,7 +20,7 @@
 }
 
 .speech-bubble.right, .tail.right {
-    background-color: #0099ff;
+    background-color: #478bc7;
 }
 
 .speech-bubble.left {
@@ -32,7 +32,7 @@
 }
 
 .speech-bubble.left, .tail.left {
-    background-color: #e3e3e3;
+    background-color: #edf0ef;
 }
 
 .tail-container {
@@ -83,7 +83,7 @@
     height: 50px;
     width: 50%;
     border-radius: 0 0 0 25px;
-    box-shadow: 0 10px 0 0 #0099ff;
+    box-shadow: 0 10px 0 0 #478bc7;
 }
 
 .inverse-border-radius.left::after {
@@ -94,5 +94,5 @@
     width: 50%;
     right: 0;
     border-radius: 0 0 25px 0;
-    box-shadow: 0 10px 0 0 #e3e3e3;
+    box-shadow: 0 10px 0 0 #EFF2F1;
 }
