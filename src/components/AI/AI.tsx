@@ -5,8 +5,8 @@ import { Button } from '../Button';
 import SpeechToText from '../../utils/speechToText';
 import SpeechBubble from './SpeechBubble/SpeechBubble';
 import SendRequest from '../../utils/sendRequest';
+import TextToSpeechElevenLabs from '../../utils/textToSpeech';
 import './AI.css';
-import sendRequest from '../../utils/sendRequest';
 
 function AI() {
     const [listening, setListening] = useState(false);
@@ -14,6 +14,7 @@ function AI() {
     const [currentMessage, setCurrentMessage] = useState({})
     const textInputRef = useRef(null);
     const stt = useRef(null);
+    const tts = useRef(new TextToSpeechElevenLabs());
 
     useEffect(() => {
         stt.current = new SpeechToText(handleSpeechInput);
@@ -54,18 +55,19 @@ function AI() {
         };
 
         try {
-            const response = await sendRequest(url, method, data);
+            const response = await SendRequest(url, method, data);
             if (!response) {
                 throw new Error('failed to get a valid response');
             }
 
-            console.log('Response data:', response);
-            handleMessage(response.data.text, 'response');
+            const responseMessage = response.data.text;
+
+            console.log('Response data:', responseMessage);
+            handleMessage(responseMessage , 'response');
         } catch (error) {
             console.error('Error fetching ai response data:', error);
             return null;
         }
-        
     }
     
     const updateMessages = (newMessage) => {
@@ -94,8 +96,11 @@ function AI() {
                     type: 'response',
                     text: aiResponse.text
                 };
+                
                 updateMessages(responseMessage);
             }
+        } else if (type === 'response') {
+            tts.current.start(text);
         }
     };
 
@@ -127,6 +132,16 @@ function AI() {
         }
     };
 
+    const handleSubmit = () => {
+        handleTextInput();
+    }
+
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            handleTextInput();
+        }
+     }
+
     const toggleSpeechToText = () => {
         if (!listening) {
             setListening(true);
@@ -149,20 +164,28 @@ function AI() {
                 ))}
             </div>
             <div className='input-container'>
-                <input className='type-prompt' ref={textInputRef} type='text'></input>
-                <Button onClick={handleTextInput}
-                        backgroundColor='#64BE00'
-                        textColor='white'
-                        text='Submit'
-                        width='15%'
-                        name='submit-text'/>
-
-                <Button onClick={toggleSpeechToText}
-                        backgroundColor={listening? '#FA4B00' : '#64BE00'}
-                        textColor='white'
-                        text={listening? 'Stop Listening' : 'Start Listening'}
-                        width='18%'
-                        name='listening'/>
+                <input 
+                    className='type-prompt' 
+                    ref={(input) => { textInputRef.current = input; }} // Use a callback function to set the ref
+                    type='text' 
+                    onKeyDown={handleKeyDown}
+                />
+                <Button 
+                    onClick={handleSubmit}
+                    backgroundColor='#64BE00'
+                    textColor='white'
+                    text='Submit'
+                    width='15%'
+                    name='submit-text'
+                />
+                <Button 
+                    onClick={toggleSpeechToText}
+                    backgroundColor={listening? '#FA4B00' : '#64BE00'}
+                    textColor='white'
+                    text={listening? 'Stop Listening' : 'Start Listening'}
+                    width='18%'
+                    name='listening'
+                />
             </div>
         </div>
     );
