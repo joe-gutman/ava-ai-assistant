@@ -1,3 +1,6 @@
+node_modules
+.next
+
 # submodules
 server/src/assistant/models/*
 server/src/logs/*
