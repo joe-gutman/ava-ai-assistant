@@ -1,15 +1,17 @@
-const sendRequest = async (url, method = 'GET', data = null) => {
+import fetch from 'cross-fetch';
+
+const sendRequest = async ({ url, method, headers, body, audioPlayer }) => {
     try {
-        console.log('URL:', url);
-        console.log('Method:', method);
-        console.log('Data:', data);
+        if (body && typeof body === 'object') {
+            body = JSON.stringify(body);
+        }
+        console.log(body);
+        console.log(headers);
 
         const response = await fetch(url, {
             method: method,
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: data ? JSON.stringify(data) : null,
+            headers: headers, 
+            body: body
         });
 
         if (!response.ok) {
@@ -17,8 +19,20 @@ const sendRequest = async (url, method = 'GET', data = null) => {
             return null;
         }
 
-        const responseData = await response.json();
-        return responseData;
+        const contentType = response.headers.get('Content-Type');
+        if (contentType && contentType.includes('application/json')) {
+            return await response.json();
+        } else if (contentType && contentType.includes('audio/mpeg')) {
+            const reader = response.body.getReader();
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                audioPlayer(value);
+            }
+        } else {
+            console.error('Unsupported content type:', contentType);
+            return null;
+        }
     } catch (error) {
         console.error('Error sending request:', error);
         return null;
