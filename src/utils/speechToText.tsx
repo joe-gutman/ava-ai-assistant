@@ -1,7 +1,4 @@
 const { createClient, LiveTranscriptionEvents } = require("@deepgram/sdk");
-const fetch = require("cross-fetch");
-const dotenv = require("dotenv");
-dotenv.config();
 
 class SpeechToText {
 	constructor(callback) {
