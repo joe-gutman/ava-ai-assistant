@@ -1,0 +1,33 @@
+.menu-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    
+    box-sizing: border-box;
+    aspect-ratio: 1 / 1;
+
+    height:  100%;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.stripe {
+    height: 100%;
+    width: 100%;
+    background-color: black;
+    border-radius: 10px;    
+    margin: 8%;
+}
+
+.menu-button .stripe:nth-child(1) {
+    /* grid-row: 1; */
+}
+
+.menu-button .stripe:nth-child(2) {
+    /* grid-row: 2; */
+}
+
+.menu-button .stripe:nth-child(3) {
+    /* grid-row: 3; */
+}
