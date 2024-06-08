@@ -1,3 +1,14 @@
+const rgbToHex = (rgb: string): string => {
+    // Parse the RGB values
+    const values = rgb.match(/\d+/g).map(Number);
+    // Convert RGB to hexadecimal
+    const hex = "#" + values.map((v) => {
+        const hexValue = v.toString(16);
+        return hexValue.length === 1 ? "0" + hexValue : hexValue;
+    }).join("");
+    return hex;
+};
+
 const adjustBrightness = (hex: string, percent: number): string => {
     let num = parseInt(hex.replace("#", ""), 16);
     let amt = Math.round(2.55 * percent);
@@ -17,4 +28,4 @@ const adjustBrightness = (hex: string, percent: number): string => {
     ).toString(16).slice(1).toUpperCase()}`;
 };
 
-export { adjustBrightness };
+export { adjustBrightness, rgbToHex };

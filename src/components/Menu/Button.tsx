@@ -2,14 +2,14 @@
 
 import './Button.css';
 
-function MenuButton({ menu, className }) {
+function MenuButton({ menu, className, onClick }) {
 
     const handleClick = () => {
         console.log('Menu button clicked');
     };
 
     return (
-        <div className={`menu-button ${className}`} onClick={handleClick}>
+        <div className={`menu-button ${className}`} onClick={onClick}>
             <div className="stripe" />
             <div className="stripe" />
             <div className="stripe" />

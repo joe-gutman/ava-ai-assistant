@@ -1,0 +1,32 @@
+.menu {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    
+    width: 250px;
+
+    background-color: white;
+    
+    top: 0;
+    right: 3px;
+    z-index: 100;
+
+    border-radius: 0 0 10px 10px;
+    border: 3px solid;
+    border-top: 0;
+}
+
+.menu .item:not(:first-child):not(.menu hr + .item)  {
+    margin-top: -5px;
+}
+
+.menu-divider {
+    height: 1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 15px;
+    background-color: #F59C1E;
+    border: .5px solid #F59C1E;
+    border-radius: 7px;
+}

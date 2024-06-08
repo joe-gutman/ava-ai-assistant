@@ -8,12 +8,17 @@ import SendRequest from '../../utils/sendRequest';
 import SpeechToText from '../../utils/speechToText';
 import TextToSpeech from '../../utils/textToSpeech';
 import MenuButton from '../../components/Menu/Button';
+import Menu from '../../components/Menu/Menu';
+import OffsetColorBorder from '../../utils/offsetColorBorder';
 import './page.css';
 
 function AI() {
+    const [loggedIn, setLoggedIn] = useState(false);
     const [listening, setListening] = useState(false);
     const [messages, setMessages] = useState([])  
     const [currentMessage, setCurrentMessage] = useState({})
+    const [isLoading, setIsLoading] = useState(true)
+    const [showMenu, setShowMenu] = useState(false)
     const textInputRef = useRef(null);
     const stt = useRef(new SpeechToText()).current;
     const tts = useRef(new TextToSpeech()).current;
@@ -21,8 +26,24 @@ function AI() {
     const processingAudio = useRef(false);
 
     useEffect(() => {
+        OffsetColorBorder({'offset-color-border': -15, 'offset-color-border-speech-right' : -5, 'offset-color-border-speech-left' : -2});
         stt.current = new SpeechToText(handleSpeechInput);
+        setIsLoading(false);
     }, []);
+
+    useEffect(() => {
+        OffsetColorBorder({'offset-color-border': -15, 'offset-color-border-speech-right' : -5, 'offset-color-border-speech-left' : -2});
+    }, [messages, currentMessage, showMenu]);
+
+    useEffect(() => {
+        if(!isLoading) {
+            const loadingAva = document.querySelector('.loading.ava');
+            if (loadingAva) {
+                loadingAva.style.display = 'none';
+              }
+        }
+    }, [isLoading])
+
 
     const handleAIResponse = async (prompt) => {
         const request = { 
@@ -190,41 +211,54 @@ function AI() {
     };
 
     return (
-        <div className='main-container'>
-            <div className='menu-bar'>
-                <MenuButton className={'ai'} />
-            </div>
-            <div className='chat-box'>
-                {/* current message being spoken updated in real time */}
-                {currentMessage && <SpeechBubble text={currentMessage.text} type={currentMessage.type}/>}
-                {/* all messages, updated when current message is completed */}
-                {messages.map((message, index) => (
-                    <SpeechBubble key={index} text={message.text} type={message.type}/>
-                ))}
-            </div>
-            <div className='input-container'>
-                <input 
-                    className='type-prompt' 
-                    ref={(input) => { textInputRef.current = input; }} // Use a callback function to set the ref
-                    type='text' 
-                    onKeyDown={handleKeyDown}
-                />
-                <Button 
-                    onClick={handleSubmit}
-                    backgroundColor='#64BE00'
-                    textColor='white'
-                    text='Submit'
-                    width='15%'
-                    name='submit-text'
-                />
-                <Button 
-                    onClick={toggleSpeechToText}
-                    backgroundColor={listening? '#FA4B00' : '#64BE00'}
-                    textColor='white'
-                    text={listening? 'Stop Listening' : 'Start Listening'}
-                    width='18%'
-                    name='listening'
-                />
+        <div className='page-container'>
+            <div className='loading ava'></div>
+            <div className='noise-background' />
+            <div className='center-container'>
+                <div className='menu-bar offset-color-border'>
+                    <img src='branding/logotype-ava.png' alt='Ava AI Assistant' className='ava-logotype'/>
+                    <MenuButton className={'ai'} onClick={() => { setShowMenu(true) }}/>
+                    { showMenu && <Menu />}
+                </div>
+                <div className='chat-box offset-color-border'>
+                    {/* current message being spoken updated in real time */}
+                    {currentMessage && <SpeechBubble text={currentMessage.text} type={currentMessage.type}/>}
+                    {/* all messages, updated when current message is completed */}
+                    {messages.map((message, index) => (
+                        <SpeechBubble key={index} text={message.text} type={message.type}/>
+                    ))}
+                </div>
+                <div className='input-container'>
+                    <input 
+                        className='prompt-input offset-color-border' 
+                        ref={(input) => { textInputRef.current = input; }} // Use a callback function to set the ref
+                        type='text' 
+                        onKeyDown={handleKeyDown}
+                    />
+                    <Button 
+                        onClick={handleSubmit}
+                        text='Submit'
+                        name='submit-text'
+                        style={{
+                            backgroundColor: '#64BE00',
+                            border: '3px solid',
+                            color: 'white',
+                            width: '15%'
+                        }}
+                    />
+                    <Button 
+                        onClick={toggleSpeechToText}
+                        text={listening ? 'Stop Listening' : 'Start Listening'}
+                        name='listening'
+                        style={{
+                            backgroundColor: listening ? '#FA4B00' : '#64BE00',
+                            border: '3px solid',
+                            color: 'white',
+                            width: '18%'
+                        }}
+                    />
+
+                </div>
             </div>
         </div>
     );

@@ -8,16 +8,16 @@
     aspect-ratio: 1 / 1;
 
     height:  100%;
-    padding: 10px;
+    padding: 11.5px;
     cursor: pointer;
 }
 
 .stripe {
     height: 100%;
     width: 100%;
-    background-color: black;
+    background-color: #F59C1E;
     border-radius: 10px;    
-    margin: 8%;
+    margin: 5.5%;
 }
 
 .menu-button .stripe:nth-child(1) {
